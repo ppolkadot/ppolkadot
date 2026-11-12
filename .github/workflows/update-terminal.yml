@@ -1,0 +1,38 @@
+name: Update Terminal README
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Runs daily at midnight UTC
+  workflow_dispatch:     # Allows manual trigger from the Actions tab
+  push:
+    branches: [main, master]
+    paths:
+      - 'generate-terminal.mjs'
+
+permissions:
+  contents: write
+
+jobs:
+  update-svg:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run SVG Generator
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node generate-terminal.mjs
+
+      - name: Commit and Push updated SVGs
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add terminal-dark.svg terminal-light.svg
+          git diff --cached --quiet || git commit -m "chore: update live terminal stats"
+          git push
