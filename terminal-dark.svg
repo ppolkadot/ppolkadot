@@ -16,14 +16,14 @@
     <text x="28" y="64" fill="#4c566a">--------------------------------------</text>
     <text x="28" y="90"><tspan class="label">OS:</tspan> Windows / WASAPI / BLE-Core</text>
     <text x="28" y="114"><tspan class="label">LANGS:</tspan> Rust, JS, TypeScript</text>
-    <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> syncing...</text>
-    <text x="28" y="162"><tspan class="label">STREAK:</tspan> live <tspan class="bar-fill">████████</tspan><tspan class="bar-empty">░░░░░░░</tspan></text>
+    <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> 69 total</text>
+    <text x="28" y="162"><tspan class="label">STREAK:</tspan> 3 days <tspan class="bar-fill">██</tspan><tspan class="bar-empty">░░░░░░░░░░░░░</tspan></text>
     <text x="28" y="186"><tspan class="label">STATUS:</tspan> <tspan class="header">[ACTIVE]</tspan> 0x00A4 // streaming_ok</text>
 
     <text x="28" y="222" class="header">$ git log --oneline -3</text>
-    <text x="28" y="244">* 9c3b8f1 - init cyber-terminal workflow</text>
-    <text x="28" y="266">* f10a4e3 - add dark/light ascii globe</text>
-    <text x="28" y="288">* e38d27a - awaiting first action run...</text>
+    <text x="28" y="244">* 0000000 - awaiting next commit...</text>
+    <text x="28" y="266">* 0000000 - awaiting next commit...</text>
+    <text x="28" y="288">* 0000000 - awaiting next commit...</text>
 
     <text x="28" y="318" class="header">$</text>
     <rect x="43" y="305" width="9" height="15" class="cursor" />
