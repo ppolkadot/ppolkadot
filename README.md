@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="./assets/your-ascii-art.gif" alt="ASCII Art" width="450" />
+  <img src="./ppascii" alt="ASCII Art" width="450" />
 </p>
 
 <!--
