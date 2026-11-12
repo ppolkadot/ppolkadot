@@ -1,4 +1,6 @@
-## Hi there 👋
+<p align="center">
+  <img src="./assets/your-ascii-art.gif" alt="ASCII Art" width="450" />
+</p>
 
 <!--
 **ppolkadot/ppolkadot** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
