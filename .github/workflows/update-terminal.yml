@@ -8,6 +8,7 @@ on:
     branches: [main, master]
     paths:
       - 'generate-terminal.mjs'
+      - '.github/workflows/update-terminal.yml'
 
 permissions:
   contents: write
@@ -26,7 +27,7 @@ jobs:
 
       - name: Run SVG Generator
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.PROFILE_TOKEN || secrets.GITHUB_TOKEN }}
         run: node generate-terminal.mjs
 
       - name: Commit and Push updated SVGs
@@ -34,5 +35,4 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add terminal-dark.svg terminal-light.svg
-          git diff --cached --quiet || git commit -m "chore: update live terminal stats"
-          git push
+          git diff --cached --quiet || (git commit -m "chore: update live terminal stats" && git push)
