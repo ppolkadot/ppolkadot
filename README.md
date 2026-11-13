@@ -17,13 +17,10 @@
       </td>
     </tr>
   </table>
-  <p>
-    <code>
-      <a href="https://github.com/ppolkadot?tab=repositories">[repositories]</a>
-      &nbsp;&middot;&nbsp;
-      <a href="https://github.com/ppolkadot?tab=stars">[stars]</a>
-      &nbsp;&middot;&nbsp;
-      <a href="https://github.com/ppolkadot">[profile]</a>
-    </code>
+  <br />
+  <p align="center">
+    <a href="https://github.com/ppolkadot?tab=repositories"><kbd>&nbsp;repositories&nbsp;</kbd></a>
+    &nbsp;&nbsp;
+    <a href="https://github.com/ppolkadot?tab=stars"><kbd>&nbsp;stars&nbsp;</kbd></a>
   </p>
 </div>

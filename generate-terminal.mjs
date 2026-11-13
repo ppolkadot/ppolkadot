@@ -2,7 +2,18 @@ import fs from 'fs';
 
 const USERNAME = 'ppolkadot';
 const TOKEN = process.env.GH_TOKEN;
-const DEFAULT_LANGS = 'Rust, JS, TypeScript';
+const OS_LIST = 'Windows / Fedora Linux / MacOS';
+const LANG_LIST = 'Rust, Java, TypeScript, Kotlin';
+
+function formatCommitLine(sha, rawMessage) {
+  const shortSha = (sha ?? '0000000').substring(0, 7);
+  const cleanMsg = (rawMessage ?? '').split('\n')[0].replace(/[^\x20-\x7E]/g, '').trim();
+  if (!cleanMsg || cleanMsg.startsWith('chore: update live terminal stats')) {
+    return null;
+  }
+  const msg = cleanMsg.length > 32 ? `${cleanMsg.substring(0, 29)}...` : cleanMsg;
+  return { sha: shortSha, line: `* ${shortSha} - ${msg}` };
+}
 
 async function fetchGitHubData() {
   if (!TOKEN) {
@@ -10,7 +21,6 @@ async function fetchGitHubData() {
     return {
       streak: 14,
       total: 428,
-      langs: DEFAULT_LANGS,
       commits: [
         '* 9c3b8f1 - init cyber-terminal workflow',
         '* f10a4e3 - add dark/light ascii globe',
@@ -33,10 +43,23 @@ async function fetchGitHubData() {
             }
           }
         }
-        repositories(first: 20, ownerAffiliations: OWNER, isFork: false, orderBy: {field: PUSHED_AT, direction: DESC}) {
+        repositories(first: 6, ownerAffiliations: OWNER, privacy: PUBLIC, orderBy: {field: PUSHED_AT, direction: DESC}) {
           nodes {
-            primaryLanguage {
-              name
+            defaultBranchRef {
+              target {
+                ... on Commit {
+                  history(first: 5) {
+                    nodes {
+                      oid
+                      messageHeadline
+                      committedDate
+                      author {
+                        name
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
@@ -76,43 +99,68 @@ async function fetchGitHubData() {
     }
   }
 
-  const langCounts = new Map();
-  for (const repo of gqlData.data.user.repositories?.nodes ?? []) {
-    const name = repo?.primaryLanguage?.name;
-    if (name) {
-      langCounts.set(name, (langCounts.get(name) ?? 0) + 1);
-    }
-  }
-  const topLangs = [...langCounts.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(([name]) => name);
-  const langs = topLangs.length > 0 ? topLangs.join(', ') : DEFAULT_LANGS;
+  const seenShas = new Set();
+  const commits = [];
 
-  const eventsRes = await fetch(`https://api.github.com/users/${USERNAME}/events/public?per_page=30`, {
+  // Fetch recent public PushEvents; GitHub removed inline payload.commits, so resolve via head SHA
+  const eventsRes = await fetch(`https://api.github.com/users/${USERNAME}/events/public?per_page=20`, {
     headers: { Authorization: `Bearer ${TOKEN}` },
   });
 
-  if (!eventsRes.ok) {
-    throw new Error(`Events request failed: ${eventsRes.status} ${eventsRes.statusText}`);
+  if (eventsRes.ok) {
+    const events = await eventsRes.json();
+    if (Array.isArray(events)) {
+      for (const ev of events) {
+        if (ev.type !== 'PushEvent' || !ev.repo?.name) continue;
+        if (Array.isArray(ev.payload?.commits)) {
+          for (const c of [...ev.payload.commits].reverse()) {
+            if (c.author?.name === 'github-actions[bot]') continue;
+            const formatted = formatCommitLine(c.sha, c.message);
+            if (formatted && !seenShas.has(formatted.sha)) {
+              seenShas.add(formatted.sha);
+              commits.push(formatted.line);
+            }
+            if (commits.length >= 3) break;
+          }
+        } else if (ev.payload?.head) {
+          const commitRes = await fetch(
+            `https://api.github.com/repos/${ev.repo.name}/commits?sha=${ev.payload.head}&per_page=5`,
+            { headers: { Authorization: `Bearer ${TOKEN}` } }
+          );
+          if (commitRes.ok) {
+            const repoCommits = await commitRes.json();
+            if (Array.isArray(repoCommits)) {
+              for (const c of repoCommits) {
+                if (c.commit?.author?.name === 'github-actions[bot]' || c.author?.login === 'github-actions[bot]') {
+                  continue;
+                }
+                const formatted = formatCommitLine(c.sha, c.commit?.message);
+                if (formatted && !seenShas.has(formatted.sha)) {
+                  seenShas.add(formatted.sha);
+                  commits.push(formatted.line);
+                }
+                if (commits.length >= 3) break;
+              }
+            }
+          }
+        }
+        if (commits.length >= 3) break;
+      }
+    }
   }
 
-  const events = await eventsRes.json();
-  const commits = [];
+  // Fallback/supplement from public repo commit history sorted newest first
+  if (commits.length < 3) {
+    const repoCommits = (gqlData.data.user.repositories?.nodes ?? [])
+      .flatMap((repo) => repo?.defaultBranchRef?.target?.history?.nodes ?? [])
+      .filter((c) => c && c.author?.name !== 'github-actions[bot]')
+      .sort((a, b) => new Date(b.committedDate) - new Date(a.committedDate));
 
-  if (Array.isArray(events)) {
-    for (const ev of events) {
-      if (ev.repo?.name === `${USERNAME}/${USERNAME}`) continue;
-      if (ev.type === 'PushEvent' && Array.isArray(ev.payload?.commits)) {
-        for (const c of [...ev.payload.commits].reverse()) {
-          if (c.author?.name === 'github-actions[bot]') continue;
-          const sha = (c.sha ?? '0000000').substring(0, 7);
-          const rawMsg = (c.message ?? '').split('\n')[0].replace(/[^\x20-\x7E]/g, '').trim();
-          if (!rawMsg || rawMsg.startsWith('chore: update live terminal stats')) continue;
-          const msg = rawMsg.length > 32 ? `${rawMsg.substring(0, 29)}...` : rawMsg;
-          commits.push(`* ${sha} - ${msg}`);
-          if (commits.length >= 3) break;
-        }
+    for (const c of repoCommits) {
+      const formatted = formatCommitLine(c.oid, c.messageHeadline);
+      if (formatted && !seenShas.has(formatted.sha)) {
+        seenShas.add(formatted.sha);
+        commits.push(formatted.line);
       }
       if (commits.length >= 3) break;
     }
@@ -125,7 +173,6 @@ async function fetchGitHubData() {
   return {
     streak,
     total: calendar.totalContributions,
-    langs,
     commits,
   };
 }
@@ -174,9 +221,9 @@ function buildSvg(data, isDark = true) {
 
   <g class="term">
     <text x="28" y="46" class="header">[${USERNAME} @ github]</text>
-    <text x="28" y="64" fill="${muted}">--------------------------------------</text>
-    <text x="28" y="90"><tspan class="label">OS:</tspan> Windows / WASAPI / BLE-Core</text>
-    <text x="28" y="114"><tspan class="label">LANGS:</tspan> ${escapeXml(data.langs)}</text>
+    <text x="28" y="64" fill="${muted}">------------------------------------------</text>
+    <text x="28" y="90"><tspan class="label">OS:</tspan> ${escapeXml(OS_LIST)}</text>
+    <text x="28" y="114"><tspan class="label">LANGS:</tspan> ${escapeXml(LANG_LIST)}</text>
     <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> ${data.total} total</text>
     <text x="28" y="162"><tspan class="label">STREAK:</tspan> ${data.streak} days <tspan class="bar-fill">${barFilled}</tspan><tspan class="bar-empty">${barEmpty}</tspan></text>
     <text x="28" y="186"><tspan class="label">STATUS:</tspan> <tspan class="header">[ACTIVE]</tspan> 0x00A4 // streaming_ok</text>
