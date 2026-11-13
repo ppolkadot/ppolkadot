@@ -8,7 +8,11 @@ const LANG_LIST = 'Rust, Java, TypeScript, Kotlin';
 function formatCommitLine(sha, rawMessage) {
   const shortSha = (sha ?? '0000000').substring(0, 7);
   const cleanMsg = (rawMessage ?? '').split('\n')[0].replace(/[^\x20-\x7E]/g, '').trim();
-  if (!cleanMsg || cleanMsg.startsWith('chore: update live terminal stats')) {
+  if (
+    !cleanMsg ||
+    cleanMsg.startsWith('chore: update live terminal stats') ||
+    cleanMsg.startsWith('chore: tend the ')
+  ) {
     return null;
   }
   const msg = cleanMsg.length > 32 ? `${cleanMsg.substring(0, 29)}...` : cleanMsg;

@@ -1,0 +1,42 @@
+name: Grow Sakura Git Bonsai
+
+on:
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+    paths:
+      - 'generate-bonsai.mjs'
+      - '.github/workflows/bonsai.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  grow:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch git-bonsai engine
+        run: git clone --depth 1 https://github.com/egorthinks/git-bonsai.git /tmp/git-bonsai
+
+      - name: Grow Sakura Bonsai
+        env:
+          GH_TOKEN: ${{ secrets.PROFILE_TOKEN || secrets.GITHUB_TOKEN }}
+          BONSAI_ENGINE: /tmp/git-bonsai/dist/src
+        run: node generate-bonsai.mjs
+
+      - name: Commit and Push Sakura Bonsai
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add output/bonsai.svg output/bonsai.png output/bonsai.gif output/bonsai-growth.gif
+          git diff --cached --quiet || (git commit -m "chore: tend the sakura bonsai" && git push)
