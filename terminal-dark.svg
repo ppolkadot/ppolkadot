@@ -24,9 +24,9 @@
     <text x="28" y="186"><tspan class="label">STATUS:</tspan> <tspan class="header">[ACTIVE]</tspan> 0x00A4 // streaming_ok</text>
 
     <text x="28" y="222" class="header">$ git log --oneline -3</text>
-    <text x="28" y="244">* d4d9d19 - feat: add sakura git-bonsai, ...</text>
-    <text x="28" y="266">* d2db807 - v3</text>
-    <text x="28" y="288">* 24578a0 - Merge branch &apos;main&apos; of https:...</text>
+    <text x="28" y="244">* 4ed31b8 - docs: record import-draft fix...</text>
+    <text x="28" y="266">* 5bd301f - fix(ui): discard the profile ...</text>
+    <text x="28" y="288">* d94a6fe - docs: record follow-up review...</text>
 
     <text x="28" y="318" class="header">$</text>
     <rect x="43" y="305" width="9" height="15" class="cursor" />
