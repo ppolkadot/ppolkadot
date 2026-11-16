@@ -20,13 +20,13 @@
     <text x="28" y="90"><tspan class="label">OS:</tspan> Windows / Fedora Linux / MacOS</text>
     <text x="28" y="114"><tspan class="label">LANGS:</tspan> Rust, Java, TypeScript, Kotlin</text>
     <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> 230 total</text>
-    <text x="28" y="162"><tspan class="label">STREAK:</tspan> 5 days <tspan class="bar-fill">███</tspan><tspan class="bar-empty">░░░░░░░░░░░░</tspan></text>
+    <text x="28" y="162"><tspan class="label">STREAK:</tspan> 0 days <tspan class="bar-fill"></tspan><tspan class="bar-empty">░░░░░░░░░░░░░░░</tspan></text>
     <text x="28" y="186"><tspan class="label">STATUS:</tspan> <tspan class="header">[ACTIVE]</tspan> 0x00A4 // streaming_ok</text>
 
     <text x="28" y="222" class="header">$ git log --oneline -3</text>
-    <text x="28" y="244">* 4ed31b8 - docs: record import-draft fix...</text>
-    <text x="28" y="266">* 5bd301f - fix(ui): discard the profile ...</text>
-    <text x="28" y="288">* d94a6fe - docs: record follow-up review...</text>
+    <text x="28" y="244">* 24578a0 - Merge branch &apos;main&apos; of https:...</text>
+    <text x="28" y="266">* d3762bc - v3?</text>
+    <text x="28" y="288">* aeecbd5 - v2</text>
 
     <text x="28" y="318" class="header">$</text>
     <rect x="43" y="305" width="9" height="15" class="cursor" />
