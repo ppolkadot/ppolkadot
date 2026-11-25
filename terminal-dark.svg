@@ -19,14 +19,14 @@
     <text x="28" y="64" fill="#4c566a">------------------------------------------</text>
     <text x="28" y="90"><tspan class="label">OS:</tspan> Windows / Fedora Linux / MacOS</text>
     <text x="28" y="114"><tspan class="label">LANGS:</tspan> Rust, Java, TypeScript, Kotlin</text>
-    <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> 348 total</text>
-    <text x="28" y="162"><tspan class="label">STREAK:</tspan> 1 days <tspan class="bar-fill">█</tspan><tspan class="bar-empty">░░░░░░░░░░░░░░</tspan></text>
+    <text x="28" y="138"><tspan class="label">COMMITS (1Y):</tspan> 358 total</text>
+    <text x="28" y="162"><tspan class="label">STREAK:</tspan> 2 days <tspan class="bar-fill">█</tspan><tspan class="bar-empty">░░░░░░░░░░░░░░</tspan></text>
     <text x="28" y="186"><tspan class="label">STATUS:</tspan> <tspan class="header">[ACTIVE]</tspan> 0x00A4 // streaming_ok</text>
 
     <text x="28" y="222" class="header">$ git log --oneline -3</text>
-    <text x="28" y="244">* 8480282 - Proposed UI Change plan</text>
-    <text x="28" y="266">* baea8f0 - UI Changes for beta 2.0.0</text>
-    <text x="28" y="288">* dfdf423 - chore: refresh GitHub contrib...</text>
+    <text x="28" y="244">* edb885c - fix(deps): update url to 2.5.9</text>
+    <text x="28" y="266">* c86e721 - fix(core): harden image cache...</text>
+    <text x="28" y="288">* b3f7564 - feat(core): cache scope trans...</text>
 
     <text x="28" y="318" class="header">$</text>
     <rect x="43" y="305" width="9" height="15" class="cursor" />
